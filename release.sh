@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+#
+# 触发 Build Release 发布流水线
+#
+# 用法:
+#   ./release.sh              # 版本号自动生成 (yyyyMMddHHmmss)
+#   ./release.sh 2.15.1       # 指定版本号
+
+set -euo pipefail
+
+VERSION="${1:-$(date +%Y%m%d%H%M%S)}"
+REPO="$(git remote get-url origin | sed -E 's#(git@github.com:|https://github.com/)##; s#\.git$##')"
+BRANCH="develop"
+
+if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
+    echo "WARN: 存在未提交的改动，发布内容以远端 ${BRANCH} 为准" >&2
+fi
+
+if [ -n "$(git log "origin/${BRANCH}..HEAD" --oneline 2>/dev/null)" ]; then
+    echo "ERROR: 本地有未推送的提交，请先 git push" >&2
+    exit 1
+fi
+
+if ! OUTPUT="$(gh workflow run release.yml -R "$REPO" --ref "$BRANCH" -f version="$VERSION" 2>&1)"; then
+    echo "$OUTPUT" >&2
+    exit 1
+fi
+
+sleep 3
+RUN_URL="$(gh run list -R "$REPO" --workflow=release.yml --limit 1 --json url --jq '.[0].url')"
+
+echo "流水线地址：$RUN_URL"
+echo "版本号：$VERSION"
