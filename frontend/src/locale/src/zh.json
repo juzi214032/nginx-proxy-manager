@@ -62,6 +62,12 @@
 	"action.renew": {
 		"defaultMessage": "续期"
 	},
+	"action.set-default": {
+		"defaultMessage": "设为默认"
+	},
+	"action.unset-default": {
+		"defaultMessage": "取消默认"
+	},
 	"action.view-details": {
 		"defaultMessage": "查看详情"
 	},
@@ -109,6 +115,9 @@
 	},
 	"certificates.custom.warning": {
 		"defaultMessage": "不支持受密码保护的密钥文件。"
+	},
+	"certificates.default": {
+		"defaultMessage": "默认"
 	},
 	"certificates.dns.credentials": {
 		"defaultMessage": "凭据文件内容"

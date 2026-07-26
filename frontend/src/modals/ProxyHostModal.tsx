@@ -16,9 +16,9 @@ import {
 	SSLCertificateField,
 	SSLOptionsFields,
 } from "src/components";
-import { useProxyHost, useSetProxyHost, useUser } from "src/hooks";
+import { useProxyHost, useSetProxyHost, useSetting, useUser } from "src/hooks";
 import { T } from "src/locale";
-import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
+import { isAdmin, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { validateNumber, validateString } from "src/modules/Validations";
 import { showObjectSuccess } from "src/notifications";
 
@@ -32,6 +32,12 @@ interface Props extends InnerModalProps {
 const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 	const { data: currentUser, isLoading: userIsLoading, error: userError } = useUser("me");
 	const { data, isLoading, error } = useProxyHost(id);
+	const wantsDefaultCert = id === "new" && isAdmin(currentUser?.roles);
+	const { data: defaultCertSetting, isPending: settingIsPending } = useSetting("default-certificate", {
+		enabled: wantsDefaultCert,
+	});
+	const settingIsLoading = wantsDefaultCert && settingIsPending;
+	const defaultCertificateId = id === "new" ? Number(defaultCertSetting?.value || 0) : 0;
 	const { mutate: setProxyHost } = useSetProxyHost();
 	const [errorMsg, setErrorMsg] = useState<ReactNode | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -66,8 +72,8 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 					{error?.message || userError?.message || "Unknown error"}
 				</Alert>
 			)}
-			{isLoading || (userIsLoading && <Loading noLogo />)}
-			{!isLoading && !userIsLoading && data && currentUser && (
+			{isLoading || ((userIsLoading || settingIsLoading) && <Loading noLogo />)}
+			{!isLoading && !userIsLoading && !settingIsLoading && data && currentUser && (
 				<Formik
 					initialValues={
 						{
@@ -83,7 +89,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 							// Locations tab
 							locations: data?.locations || [],
 							// SSL tab
-							certificateId: data?.certificateId || 0,
+							certificateId: data?.certificateId || defaultCertificateId || 0,
 							sslForced: data?.sslForced || false,
 							http2Support: data?.http2Support || false,
 							hstsEnabled: data?.hstsEnabled || false,

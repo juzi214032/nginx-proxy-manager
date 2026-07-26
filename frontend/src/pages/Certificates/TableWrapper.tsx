@@ -3,7 +3,7 @@ import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteCertificate, downloadCertificate } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
-import { useCertificates } from "src/hooks";
+import { useCertificates, useSetSetting, useSetting, useUser } from "src/hooks";
 import { T } from "src/locale";
 import {
 	showCustomCertificateModal,
@@ -13,7 +13,7 @@ import {
 	showHTTPCertificateModal,
 	showRenewCertificateModal,
 } from "src/modals";
-import { CERTIFICATES, MANAGE } from "src/modules/Permissions";
+import { CERTIFICATES, MANAGE, isAdmin } from "src/modules/Permissions";
 import { showError, showObjectSuccess } from "src/notifications";
 import Table from "./Table";
 
@@ -26,6 +26,11 @@ export default function TableWrapper() {
 		"redirection_hosts",
 		"streams",
 	]);
+	const { data: currentUser } = useUser("me");
+	const userIsAdmin = isAdmin(currentUser?.roles);
+	const { data: defaultCertSetting } = useSetting("default-certificate", { enabled: userIsAdmin });
+	const { mutate: setSetting } = useSetSetting();
+	const defaultCertificateId = Number(defaultCertSetting?.value || 0);
 
 	if (isLoading) {
 		return <LoadingPage />;
@@ -34,6 +39,19 @@ export default function TableWrapper() {
 	if (isError) {
 		return <Alert variant="danger">{error?.message || "Unknown error"}</Alert>;
 	}
+
+	const handleSetDefault = (id: number) => {
+		setSetting(
+			{
+				id: "default-certificate",
+				value: String(id === defaultCertificateId ? 0 : id),
+			},
+			{
+				onError: (err: any) => showError(err.message),
+				onSuccess: () => showObjectSuccess("certificate", "saved"),
+			},
+		);
+	};
 
 	const handleDelete = async (id: number) => {
 		await deleteCertificate(id);
@@ -144,6 +162,8 @@ export default function TableWrapper() {
 					data={filtered ?? data ?? []}
 					isFiltered={!!search}
 					isFetching={isFetching}
+					defaultCertificateId={defaultCertificateId}
+					onSetDefault={userIsAdmin ? handleSetDefault : undefined}
 					onRenew={showRenewCertificateModal}
 					onDownload={handleDownload}
 					onDelete={(id: number) =>

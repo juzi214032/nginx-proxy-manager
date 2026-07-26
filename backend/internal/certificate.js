@@ -13,6 +13,7 @@ import error from "../lib/error.js";
 import utils from "../lib/utils.js";
 import { debug, ssl as logger } from "../logger.js";
 import certificateModel from "../models/certificate.js";
+import settingModel from "../models/setting.js";
 import tokenModel from "../models/token.js";
 import userModel from "../models/user.js";
 import internalAuditLog from "./audit-log.js";
@@ -404,6 +405,13 @@ const internalCertificate = {
 		await certificateModel.query().where("id", row.id).patch({
 			is_deleted: 1,
 		});
+
+		// Clear default-certificate setting if it pointed at this certificate
+		await settingModel
+			.query()
+			.where("id", "default-certificate")
+			.andWhere("value", String(row.id))
+			.patch({ value: "0" });
 
 		// Add to audit log
 		row.meta = internalCertificate.cleanMeta(row.meta);

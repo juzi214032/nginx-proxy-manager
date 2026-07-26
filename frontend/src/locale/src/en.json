@@ -128,6 +128,12 @@
 	"action.renew": {
 		"defaultMessage": "Renew"
 	},
+	"action.set-default": {
+		"defaultMessage": "Set as Default"
+	},
+	"action.unset-default": {
+		"defaultMessage": "Unset Default"
+	},
 	"action.view-details": {
 		"defaultMessage": "View Details"
 	},
@@ -178,6 +184,9 @@
 	},
 	"certificates.custom.warning": {
 		"defaultMessage": "Key files protected with a passphrase are not supported."
+	},
+	"certificates.default": {
+		"defaultMessage": "Default"
 	},
 	"certificates.dns.credentials": {
 		"defaultMessage": "Credentials File Content"

@@ -96,6 +96,25 @@ const setupDefaultSettings = async () => {
 			});
 		logger.info("Default settings added");
 	}
+
+	const certRow = await settingModel
+		.query()
+		.select("id")
+		.where({ id: "default-certificate" })
+		.first();
+
+	if (!certRow?.id) {
+		await settingModel
+			.query()
+			.insert({
+				id: "default-certificate",
+				name: "Default Certificate",
+				description: "Certificate preselected when creating new hosts",
+				value: "0",
+				meta: {},
+			});
+		logger.info("Default certificate setting added");
+	}
 };
 
 /**

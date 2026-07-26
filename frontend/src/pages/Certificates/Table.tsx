@@ -1,4 +1,4 @@
-import { IconDotsVertical, IconDownload, IconRefresh, IconTrash } from "@tabler/icons-react";
+import { IconDotsVertical, IconDownload, IconRefresh, IconStar, IconStarOff, IconTrash } from "@tabler/icons-react";
 import { createColumnHelper, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useMemo } from "react";
 import type { Certificate } from "src/api/backend";
@@ -19,11 +19,22 @@ interface Props {
 	data: Certificate[];
 	isFiltered?: boolean;
 	isFetching?: boolean;
+	defaultCertificateId?: number;
 	onDelete?: (id: number) => void;
 	onRenew?: (id: number) => void;
 	onDownload?: (id: number) => void;
+	onSetDefault?: (id: number) => void;
 }
-export default function Table({ data, isFetching, onDelete, onRenew, onDownload, isFiltered }: Props) {
+export default function Table({
+	data,
+	isFetching,
+	onDelete,
+	onRenew,
+	onDownload,
+	onSetDefault,
+	defaultCertificateId,
+	isFiltered,
+}: Props) {
 	const columnHelper = createColumnHelper<Certificate>();
 	const columns = useMemo(
 		() => [
@@ -43,12 +54,19 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 				cell: (info: any) => {
 					const value = info.getValue();
 					return (
-						<DomainsFormatter
-							domains={value.domainNames}
-							createdOn={value.createdOn}
-							niceName={value.niceName}
-							provider={value.provider || ""}
-						/>
+						<div className="d-flex align-items-center gap-2">
+							<DomainsFormatter
+								domains={value.domainNames}
+								createdOn={value.createdOn}
+								niceName={value.niceName}
+								provider={value.provider || ""}
+							/>
+							{defaultCertificateId && value.id === defaultCertificateId ? (
+								<span className="badge bg-pink-lt">
+									<T id="certificates.default" />
+								</span>
+							) : null}
+						</div>
 					);
 				},
 			}),
@@ -128,6 +146,28 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 									<T id="action.renew" />
 								</a>
 								<HasPermission section={CERTIFICATES} permission={MANAGE} hideError>
+									{onSetDefault ? (
+										<a
+											className="dropdown-item"
+											href="#"
+											onClick={(e) => {
+												e.preventDefault();
+												onSetDefault(info.row.original.id);
+											}}
+										>
+											{info.row.original.id === defaultCertificateId ? (
+												<>
+													<IconStarOff size={16} />
+													<T id="action.unset-default" />
+												</>
+											) : (
+												<>
+													<IconStar size={16} />
+													<T id="action.set-default" />
+												</>
+											)}
+										</a>
+									) : null}
 									<a
 										className="dropdown-item"
 										href="#"
@@ -161,7 +201,7 @@ export default function Table({ data, isFetching, onDelete, onRenew, onDownload,
 				},
 			}),
 		],
-		[columnHelper, onDelete, onRenew, onDownload],
+		[columnHelper, onDelete, onRenew, onDownload, onSetDefault, defaultCertificateId],
 	);
 
 	const tableInstance = useReactTable<Certificate>({
