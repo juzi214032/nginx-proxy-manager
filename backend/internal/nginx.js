@@ -241,6 +241,7 @@ const internalNginx = {
 
 			// Set the IPv6 setting for the host
 			host.ipv6 = internalNginx.ipv6Enabled();
+			host.https_port = internalNginx.httpsPort();
 
 			let autheliaPromise = Promise.resolve();
 			if (nice_host_type === "proxy_host" && host.authelia_enabled) {
@@ -446,6 +447,17 @@ const internalNginx = {
 		}
 
 		return true;
+	},
+
+	/**
+	 * @returns {number}
+	 */
+	httpsPort: () => {
+		const port = Number.parseInt(process.env.NPM_HTTPS_PORT || "", 10);
+		if (Number.isFinite(port) && port > 0 && port <= 65535) {
+			return port;
+		}
+		return 443;
 	},
 };
 
