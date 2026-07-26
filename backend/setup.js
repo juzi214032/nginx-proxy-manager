@@ -1,8 +1,12 @@
 import { installPlugins } from "./lib/certbot.js";
 import utils from "./lib/utils.js";
+import internalNginx from "./internal/nginx.js";
 import { setup as logger } from "./logger.js";
 import authModel from "./models/auth.js";
 import certificateModel from "./models/certificate.js";
+import deadHostModel from "./models/dead_host.js";
+import proxyHostModel from "./models/proxy_host.js";
+import redirectionHostModel from "./models/redirection_host.js";
 import settingModel from "./models/setting.js";
 import userModel from "./models/user.js";
 import userPermissionModel from "./models/user_permission.js";
@@ -264,4 +268,47 @@ const setupLogrotation = () => {
 	return runLogrotate();
 };
 
-export default () => setupDefaultUser().then(setupDefaultSettings).then(setupCertbotPlugins).then(setupLogrotation);
+/**
+ * Regenerates all enabled host configs on startup so that changes to
+ * env vars (eg NPM_HTTPS_PORT) or templates apply to existing hosts,
+ * whose configs are persisted in the /data volume.
+ *
+ * @returns {Promise}
+ */
+const setupRegenerateHostConfigs = async () => {
+	const regen = async (model, hostType) => {
+		const rows = await model
+			.query()
+			.where("is_deleted", 0)
+			.andWhere("enabled", 1)
+			.allowGraph(model.defaultAllowGraph)
+			.withGraphFetched(model.defaultAllowGraph);
+
+		if (rows.length) {
+			await internalNginx.bulkGenerateConfigs(hostType, rows);
+		}
+		return rows.length;
+	};
+
+	try {
+		const counts = await Promise.all([
+			regen(proxyHostModel, "proxy_host"),
+			regen(redirectionHostModel, "redirection_host"),
+			regen(deadHostModel, "dead_host"),
+		]);
+		const total = counts.reduce((a, b) => a + b, 0);
+		if (total) {
+			await internalNginx.reload();
+			logger.info(`Regenerated nginx configs for ${total} hosts`);
+		}
+	} catch (err) {
+		logger.warn(`Could not regenerate nginx host configs: ${err.message}`);
+	}
+};
+
+export default () =>
+	setupDefaultUser()
+		.then(setupDefaultSettings)
+		.then(setupCertbotPlugins)
+		.then(setupLogrotation)
+		.then(setupRegenerateHostConfigs);
