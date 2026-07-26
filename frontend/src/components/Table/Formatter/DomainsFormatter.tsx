@@ -12,6 +12,7 @@ interface Props {
 	provider?: string;
 	color?: string;
 	port?: number;
+	scheme?: string;
 	copyable?: boolean;
 }
 
@@ -35,11 +36,13 @@ const DomainLink = ({
 	domain,
 	color,
 	port,
+	scheme,
 	copyable,
 }: {
 	domain?: string;
 	color?: string;
 	port?: number;
+	scheme?: string;
 	copyable?: boolean;
 }) => {
 	// when domain contains a wildcard, make the link go nowhere.
@@ -52,7 +55,7 @@ const DomainLink = ({
 			onClick = (e: React.MouseEvent) => e.preventDefault();
 		}
 		const display = port ? `${domain}:${port}` : domain;
-		const url = `http://${display}`;
+		const url = `${scheme || "http"}://${display}`;
 		const handleCopy = async (e: React.MouseEvent) => {
 			e.preventDefault();
 			e.stopPropagation();
@@ -91,7 +94,7 @@ const DomainLink = ({
 	}
 };
 
-export function DomainsFormatter({ domains, createdOn, niceName, provider, color, port, copyable }: Props) {
+export function DomainsFormatter({ domains, createdOn, niceName, provider, color, port, scheme, copyable }: Props) {
 	const { locale } = useLocaleState();
 	const elms: ReactNode[] = [];
 
@@ -112,7 +115,9 @@ export function DomainsFormatter({ domains, createdOn, niceName, provider, color
 
 	if (domains) {
 		domains.map((domain: string) =>
-			elms.push(<DomainLink key={domain} domain={domain} color={color} port={port} copyable={copyable} />),
+			elms.push(
+				<DomainLink key={domain} domain={domain} color={color} port={port} scheme={scheme} copyable={copyable} />,
+			),
 		);
 	}
 

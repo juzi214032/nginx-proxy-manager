@@ -70,6 +70,7 @@ export default function Table({
 							domains={value.domainNames}
 							createdOn={value.createdOn}
 							port={publicPort}
+							scheme={value.certificateId ? "https" : "http"}
 							copyable
 						/>
 					);
@@ -85,7 +86,12 @@ export default function Table({
 				},
 				cell: (info: any) => {
 					const value = info.getValue();
-					return `${value.forwardScheme}://${value.forwardHost}:${value.forwardPort}`;
+					const url = `${value.forwardScheme}://${value.forwardHost}:${value.forwardPort}`;
+					return (
+						<a href={url} target="_blank" rel="noopener">
+							{url}
+						</a>
+					);
 				},
 			}),
 			columnHelper.accessor((row: any) => row.certificate, {
