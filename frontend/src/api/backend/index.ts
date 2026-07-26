@@ -28,6 +28,7 @@ export * from "./getHealth";
 export * from "./getHostsReport";
 export * from "./getProxyHost";
 export * from "./getProxyHosts";
+export * from "./getProxyHostsProbe";
 export * from "./getRedirectionHost";
 export * from "./getRedirectionHosts";
 export * from "./getSetting";

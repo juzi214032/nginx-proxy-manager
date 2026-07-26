@@ -206,6 +206,9 @@
 	"column.access": {
 		"defaultMessage": "访问"
 	},
+	"column.auth": {
+		"defaultMessage": "认证"
+	},
 	"column.authorization": {
 		"defaultMessage": "授权"
 	},
@@ -263,11 +266,11 @@
 	"column.scheme": {
 		"defaultMessage": "协议"
 	},
+	"column.service": {
+		"defaultMessage": "服务"
+	},
 	"column.source": {
 		"defaultMessage": "来源"
-	},
-	"column.auth": {
-		"defaultMessage": "认证"
 	},
 	"column.ssl": {
 		"defaultMessage": "SSL"

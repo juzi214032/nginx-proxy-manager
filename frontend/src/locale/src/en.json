@@ -278,6 +278,9 @@
 	"column.access": {
 		"defaultMessage": "Access"
 	},
+	"column.auth": {
+		"defaultMessage": "Auth"
+	},
 	"column.authorization": {
 		"defaultMessage": "Authorization"
 	},
@@ -335,11 +338,11 @@
 	"column.scheme": {
 		"defaultMessage": "Scheme"
 	},
+	"column.service": {
+		"defaultMessage": "Service"
+	},
 	"column.source": {
 		"defaultMessage": "Source"
-	},
-	"column.auth": {
-		"defaultMessage": "Auth"
 	},
 	"column.ssl": {
 		"defaultMessage": "SSL"

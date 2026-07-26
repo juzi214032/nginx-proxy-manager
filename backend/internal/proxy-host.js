@@ -1,3 +1,4 @@
+import net from "node:net";
 import _ from "lodash";
 import errs from "../lib/error.js";
 import { castJsonIfNeed } from "../lib/helpers.js";
@@ -449,6 +450,46 @@ const internalProxyHost = {
 			return internalHost.cleanAllRowsCertificateMeta(rows);
 		}
 		return rows;
+	},
+
+	/**
+	 * Probe TCP reachability of each host's forward target
+	 *
+	 * @param   {Access}  access
+	 * @returns {Promise} map of host id -> boolean
+	 */
+	probeAll: async (access) => {
+		const accessData = await access.can("proxy_hosts:list");
+
+		const query = proxyHostModel
+			.query()
+			.select("id", "forward_host", "forward_port")
+			.where("is_deleted", 0);
+
+		if (accessData.permission_visibility !== "all") {
+			query.andWhere("owner_user_id", access.token.getUserId(1));
+		}
+
+		const rows = await query;
+
+		const probe = (host, port) =>
+			new Promise((resolve) => {
+				const socket = net.connect({ host, port, timeout: 2000 });
+				const done = (result) => {
+					socket.destroy();
+					resolve(result);
+				};
+				socket.on("connect", () => done(true));
+				socket.on("timeout", () => done(false));
+				socket.on("error", () => done(false));
+			});
+
+		const results = await Promise.all(rows.map((row) => probe(row.forward_host, row.forward_port)));
+		const map = {};
+		rows.forEach((row, idx) => {
+			map[row.id] = results[idx];
+		});
+		return map;
 	},
 
 	/**

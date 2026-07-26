@@ -71,6 +71,31 @@ router
 	});
 
 /**
+ * Probe upstream reachability of all proxy-hosts
+ *
+ * /api/nginx/proxy-hosts/probe
+ */
+router
+	.route("/probe")
+	.options((_, res) => {
+		res.sendStatus(204);
+	})
+	.all(jwtdecode())
+
+	/**
+	 * GET /api/nginx/proxy-hosts/probe
+	 */
+	.get(async (req, res, next) => {
+		try {
+			const result = await internalProxyHost.probeAll(res.locals.access);
+			res.status(200).send(result);
+		} catch (err) {
+			debug(logger, `${req.method.toUpperCase()} ${req.path}: ${err}`);
+			next(err);
+		}
+	});
+
+/**
  * Specific proxy-host
  *
  * /api/nginx/proxy-hosts/123

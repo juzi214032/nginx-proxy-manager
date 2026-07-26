@@ -12,6 +12,7 @@ export * from "./useHealth";
 export * from "./useHostReport";
 export * from "./useProxyHost";
 export * from "./useProxyHosts";
+export * from "./useProxyHostsProbe";
 export * from "./useRedirectionHost";
 export * from "./useRedirectionHosts";
 export * from "./useSetting";

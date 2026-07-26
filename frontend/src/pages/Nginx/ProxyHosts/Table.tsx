@@ -26,6 +26,7 @@ interface Props {
 	isFiltered?: boolean;
 	isFetching?: boolean;
 	publicPort?: number;
+	probeResults?: Record<number, boolean>;
 	onEdit?: (id: number) => void;
 	onDelete?: (id: number) => void;
 	onDisableToggle?: (id: number, enabled: boolean) => void;
@@ -42,6 +43,7 @@ export default function Table({
 	onNew,
 	isFiltered,
 	publicPort,
+	probeResults,
 }: Props) {
 	const columnHelper = createColumnHelper<ProxyHost>();
 	const columns = useMemo(
@@ -106,6 +108,18 @@ export default function Table({
 					);
 				},
 			}),
+			columnHelper.accessor((row: any) => probeResults?.[row.id], {
+				id: "service",
+				enableSorting: false,
+				header: intl.formatMessage({ id: "column.service" }),
+				cell: (info: any) => {
+					const value = info.getValue();
+					if (typeof value === "undefined") {
+						return <span className="text-secondary">-</span>;
+					}
+					return <TrueFalseFormatter value={value} trueLabel="online" falseLabel="offline" animated={false} />;
+				},
+			}),
 			columnHelper.accessor((row: any) => row.certificate, {
 				id: "certificate",
 				enableSorting: false,
@@ -120,9 +134,9 @@ export default function Table({
 				header: intl.formatMessage({ id: "column.auth" }),
 				cell: (info: any) => {
 					return (
-						<label className="form-check form-check-single form-switch mb-0">
+						<label className="form-check form-check-single form-switch mb-0 ps-0">
 							<input
-								className="form-check-input"
+								className="form-check-input ms-0"
 								type="checkbox"
 								checked={!!info.getValue()}
 								onChange={() =>
@@ -145,7 +159,7 @@ export default function Table({
 				id: "enabled",
 				header: intl.formatMessage({ id: "column.status" }),
 				cell: (info: any) => {
-					return <TrueFalseFormatter value={info.getValue()} trueLabel="online" falseLabel="offline" />;
+					return <TrueFalseFormatter value={info.getValue()} animated={false} />;
 				},
 			}),
 			columnHelper.display({
@@ -214,7 +228,7 @@ export default function Table({
 				},
 			}),
 		],
-		[columnHelper, onEdit, onDisableToggle, onAutheliaToggle, onDelete, publicPort],
+		[columnHelper, onEdit, onDisableToggle, onAutheliaToggle, onDelete, publicPort, probeResults],
 	);
 
 	const [sorting, setSorting] = useState<SortingState>([]);

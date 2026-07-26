@@ -1,9 +1,4 @@
-import {
-	fromUnixTime,
-	type IntlFormatFormatOptions,
-	intlFormat,
-	parseISO,
-} from "date-fns";
+import { format, fromUnixTime, parseISO } from "date-fns";
 
 const isUnixTimestamp = (value: unknown): boolean => {
 	if (typeof value !== "number" && typeof value !== "string") return false;
@@ -25,19 +20,11 @@ const parseDate = (value: string | number): Date | null => {
 	}
 };
 
-const formatDateTime = (value: string | number, locale = "en-US"): string => {
+const formatDateTime = (value: string | number, _locale = "en-US"): string => {
 	const d = parseDate(value);
 	if (!d) return `${value}`;
 	try {
-		return intlFormat(
-			d,
-			{
-				dateStyle: "medium",
-				timeStyle: "medium",
-				hourCycle: "h12",
-			} as IntlFormatFormatOptions,
-			{ locale },
-		);
+		return format(d, "yyyy-MM-dd HH:mm:ss");
 	} catch {
 		return `${value}`;
 	}

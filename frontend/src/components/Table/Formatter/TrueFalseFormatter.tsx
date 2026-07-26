@@ -7,6 +7,7 @@ interface Props {
 	trueColor?: string;
 	falseLabel?: string;
 	falseColor?: string;
+	animated?: boolean;
 }
 export function TrueFalseFormatter({
 	value,
@@ -14,10 +15,11 @@ export function TrueFalseFormatter({
 	trueColor = "lime",
 	falseLabel = "disabled",
 	falseColor = "red",
+	animated = true,
 }: Props) {
 	return (
 		<span className={cn("status", `status-${value ? trueColor : falseColor}`)}>
-			<span className="status-dot status-dot-animated" />
+			<span className={cn("status-dot", animated ? "status-dot-animated" : null)} />
 			<T id={value ? trueLabel : falseLabel} />
 		</span>
 	);

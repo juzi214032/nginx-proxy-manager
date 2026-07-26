@@ -4,7 +4,7 @@ import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteProxyHost, setProxyHostAuthelia, toggleProxyHost } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
-import { useProxyHosts, useSetting, useUser } from "src/hooks";
+import { useProxyHosts, useProxyHostsProbe, useSetting, useUser } from "src/hooks";
 import { T } from "src/locale";
 import { showDeleteConfirmModal, showHelpModal, showProxyHostModal } from "src/modals";
 import { isAdmin, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
@@ -18,6 +18,7 @@ export default function TableWrapper() {
 	const { data: currentUser } = useUser("me");
 	const { data: publicPortSetting } = useSetting("public-port", { enabled: isAdmin(currentUser?.roles) });
 	const publicPort = Number(publicPortSetting?.value || 0);
+	const { data: probeResults } = useProxyHostsProbe();
 
 	if (isLoading) {
 		return <LoadingPage />;
@@ -39,11 +40,22 @@ export default function TableWrapper() {
 		showObjectSuccess("proxy-host", enabled ? "enabled" : "disabled");
 	};
 
+	const setAutheliaLocal = (id: number, autheliaEnabled: boolean) => {
+		queryClient.setQueriesData({ queryKey: ["proxy-hosts"] }, (old: any) =>
+			Array.isArray(old) ? old.map((h: any) => (h.id === id ? { ...h, autheliaEnabled } : h)) : old,
+		);
+	};
+
 	const handleAutheliaToggle = async (id: number, autheliaEnabled: boolean) => {
-		await setProxyHostAuthelia(id, autheliaEnabled);
-		queryClient.invalidateQueries({ queryKey: ["proxy-hosts"] });
-		queryClient.invalidateQueries({ queryKey: ["proxy-host", id] });
-		showObjectSuccess("proxy-host", "saved");
+		// optimistic update so the switch responds instantly
+		setAutheliaLocal(id, autheliaEnabled);
+		try {
+			await setProxyHostAuthelia(id, autheliaEnabled);
+			showObjectSuccess("proxy-host", "saved");
+			queryClient.invalidateQueries({ queryKey: ["proxy-host", id] });
+		} catch {
+			setAutheliaLocal(id, !autheliaEnabled);
+		}
 	};
 
 	let filtered = null;
@@ -110,6 +122,7 @@ export default function TableWrapper() {
 					isFiltered={!!search}
 					isFetching={isFetching}
 					publicPort={publicPort}
+					probeResults={probeResults}
 					onEdit={(id: number) => showProxyHostModal(id)}
 					onDelete={(id: number) => {
 						const host = data?.find((h) => h.id === id);
