@@ -29,6 +29,7 @@ interface Props {
 	onEdit?: (id: number) => void;
 	onDelete?: (id: number) => void;
 	onDisableToggle?: (id: number, enabled: boolean) => void;
+	onAutheliaToggle?: (id: number, autheliaEnabled: boolean) => void;
 	onNew?: () => void;
 }
 export default function Table({
@@ -37,6 +38,7 @@ export default function Table({
 	onEdit,
 	onDelete,
 	onDisableToggle,
+	onAutheliaToggle,
 	onNew,
 	isFiltered,
 	publicPort,
@@ -110,6 +112,25 @@ export default function Table({
 				header: intl.formatMessage({ id: "column.ssl" }),
 				cell: (info: any) => {
 					return <CertificateFormatter certificate={info.getValue()} />;
+				},
+			}),
+			columnHelper.accessor((row: any) => row.autheliaEnabled, {
+				id: "autheliaEnabled",
+				enableSorting: false,
+				header: intl.formatMessage({ id: "column.auth" }),
+				cell: (info: any) => {
+					return (
+						<label className="form-check form-check-single form-switch mb-0">
+							<input
+								className="form-check-input"
+								type="checkbox"
+								checked={!!info.getValue()}
+								onChange={() =>
+									onAutheliaToggle?.(info.row.original.id, !info.row.original.autheliaEnabled)
+								}
+							/>
+						</label>
+					);
 				},
 			}),
 			columnHelper.accessor((row: any) => row.accessList, {
@@ -193,7 +214,7 @@ export default function Table({
 				},
 			}),
 		],
-		[columnHelper, onEdit, onDisableToggle, onDelete, publicPort],
+		[columnHelper, onEdit, onDisableToggle, onAutheliaToggle, onDelete, publicPort],
 	);
 
 	const [sorting, setSorting] = useState<SortingState>([]);

@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import errs from "../lib/error.js";
+import proxyHostModel from "../models/proxy_host.js";
 import settingModel from "../models/setting.js";
 import internalNginx from "./nginx.js";
 
@@ -66,6 +67,32 @@ const internalSetting = {
 									// I'm being slack here I know..
 									throw new errs.ValidationError("Could not reconfigure Nginx. Please check logs.");
 								});
+						});
+				}
+
+				if (row.id === "authelia") {
+					// Regenerate all enabled proxy hosts that are protected by authelia
+					return proxyHostModel
+						.query()
+						.where("is_deleted", 0)
+						.andWhere("enabled", 1)
+						.andWhere("authelia_enabled", 1)
+						.withGraphFetched("[owner,access_list.[clients,items],certificate]")
+						.then((hosts) => {
+							if (!hosts?.length) {
+								return;
+							}
+							return internalNginx.bulkGenerateConfigs("proxy_host", hosts).then(() => {
+								return internalNginx.reload();
+							});
+						})
+						.then(() => {
+							return row;
+						})
+						.catch((err) => {
+							throw new errs.ValidationError(
+								`Could not reconfigure Nginx with the new Authelia config: ${err.message}`,
+							);
 						});
 				}
 				return row;

@@ -143,6 +143,24 @@
 	"auditlogs": {
 		"defaultMessage": "Audit Logs"
 	},
+	"auth-config": {
+		"defaultMessage": "Authentication"
+	},
+	"auth-config.authrequest-snippet": {
+		"defaultMessage": "Auth Request Snippet (inside location)"
+	},
+	"auth-config.authrequest-snippet.help": {
+		"defaultMessage": "Inserted inside the default location / of protected hosts (auth_request, identity headers, 401 redirect to the portal)"
+	},
+	"auth-config.description": {
+		"defaultMessage": "Configure the Authelia nginx snippets. When the Auth toggle is enabled for a proxy host, these snippets are injected into its nginx config. Saving here regenerates all protected hosts."
+	},
+	"auth-config.location-snippet": {
+		"defaultMessage": "Verify Location Snippet (server level)"
+	},
+	"auth-config.location-snippet.help": {
+		"defaultMessage": "Inserted in the server block as the internal verify location (e.g. location /authelia forwarding to Authelia /api/verify)"
+	},
 	"auto": {
 		"defaultMessage": "Auto"
 	},
@@ -319,6 +337,9 @@
 	},
 	"column.source": {
 		"defaultMessage": "Source"
+	},
+	"column.auth": {
+		"defaultMessage": "Auth"
 	},
 	"column.ssl": {
 		"defaultMessage": "SSL"

@@ -23,7 +23,8 @@
 		"locations",
 		"hsts_enabled",
 		"hsts_subdomains",
-		"trust_forwarded_proto"
+		"trust_forwarded_proto",
+		"authelia_enabled"
 	],
 	"properties": {
 		"id": {
@@ -145,6 +146,11 @@
 		"trust_forwarded_proto":{
 			"type": "boolean",
 			"description": "Trust the forwarded headers",
+			"example": false
+		},
+		"authelia_enabled": {
+			"type": "boolean",
+			"description": "Protect this host with Authelia authentication",
 			"example": false
 		},
 		"certificate": {

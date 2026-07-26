@@ -77,6 +77,24 @@
 	"auditlogs": {
 		"defaultMessage": "审计日志"
 	},
+	"auth-config": {
+		"defaultMessage": "认证管理"
+	},
+	"auth-config.authrequest-snippet": {
+		"defaultMessage": "认证请求片段（location 内）"
+	},
+	"auth-config.authrequest-snippet.help": {
+		"defaultMessage": "插入到被保护站点 location / 内部的 auth_request 配置（拦截请求、注入用户头、401 跳转登录门户）"
+	},
+	"auth-config.description": {
+		"defaultMessage": "配置 Authelia 认证的 nginx 模板片段。在代理主机列表打开某个站点的认证开关后，这两段配置会自动注入该站点的 nginx 配置。修改保存后会自动重新生成所有已开启认证站点的配置。"
+	},
+	"auth-config.location-snippet": {
+		"defaultMessage": "验证接口片段（server 级）"
+	},
+	"auth-config.location-snippet.help": {
+		"defaultMessage": "插入到 server 块的内部验证 location（如 location /authelia，转发到 Authelia 的 /api/verify）"
+	},
 	"cancel": {
 		"defaultMessage": "取消"
 	},
@@ -247,6 +265,9 @@
 	},
 	"column.source": {
 		"defaultMessage": "来源"
+	},
+	"column.auth": {
+		"defaultMessage": "认证"
 	},
 	"column.ssl": {
 		"defaultMessage": "SSL"

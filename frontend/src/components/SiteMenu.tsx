@@ -5,6 +5,7 @@ import {
 	IconLock,
 	IconSettings,
 	IconShield,
+	IconShieldLock,
 	IconUser,
 } from "@tabler/icons-react";
 import cn from "classnames";
@@ -68,6 +69,12 @@ const menuItems: MenuItem[] = [
 				permission: VIEW,
 			},
 		],
+	},
+	{
+		to: "/auth-config",
+		icon: IconShieldLock,
+		label: "auth-config",
+		permissionSection: ADMIN,
 	},
 	{
 		to: "/access",

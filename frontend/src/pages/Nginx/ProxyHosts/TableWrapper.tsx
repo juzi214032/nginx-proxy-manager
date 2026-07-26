@@ -2,7 +2,7 @@ import { IconHelp, IconSearch } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
-import { deleteProxyHost, toggleProxyHost } from "src/api/backend";
+import { deleteProxyHost, setProxyHostAuthelia, toggleProxyHost } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
 import { useProxyHosts, useSetting, useUser } from "src/hooks";
 import { T } from "src/locale";
@@ -37,6 +37,13 @@ export default function TableWrapper() {
 		queryClient.invalidateQueries({ queryKey: ["proxy-hosts"] });
 		queryClient.invalidateQueries({ queryKey: ["proxy-host", id] });
 		showObjectSuccess("proxy-host", enabled ? "enabled" : "disabled");
+	};
+
+	const handleAutheliaToggle = async (id: number, autheliaEnabled: boolean) => {
+		await setProxyHostAuthelia(id, autheliaEnabled);
+		queryClient.invalidateQueries({ queryKey: ["proxy-hosts"] });
+		queryClient.invalidateQueries({ queryKey: ["proxy-host", id] });
+		showObjectSuccess("proxy-host", "saved");
 	};
 
 	let filtered = null;
@@ -126,6 +133,7 @@ export default function TableWrapper() {
 						});
 					}}
 					onDisableToggle={handleDisableToggle}
+					onAutheliaToggle={handleAutheliaToggle}
 					onNew={() => showProxyHostModal("new")}
 				/>
 			</div>

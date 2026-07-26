@@ -128,6 +128,7 @@ export interface ProxyHost {
 	hstsEnabled: boolean;
 	hstsSubdomains: boolean;
 	trustForwardedProto: boolean;
+	autheliaEnabled: boolean;
 	// Expansions:
 	owner?: User;
 	accessList?: AccessList;

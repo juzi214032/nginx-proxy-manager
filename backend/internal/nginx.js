@@ -5,6 +5,7 @@ import _ from "lodash";
 import errs from "../lib/error.js";
 import utils from "../lib/utils.js";
 import { debug, nginx as logger } from "../logger.js";
+import settingModel from "../models/setting.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -241,7 +242,21 @@ const internalNginx = {
 			// Set the IPv6 setting for the host
 			host.ipv6 = internalNginx.ipv6Enabled();
 
-			locationsPromise.then(() => {
+			let autheliaPromise = Promise.resolve();
+			if (nice_host_type === "proxy_host" && host.authelia_enabled) {
+				autheliaPromise = settingModel
+					.query()
+					.where({ id: "authelia" })
+					.first()
+					.then((settingRow) => {
+						if (settingRow?.meta) {
+							host.authelia_location = settingRow.meta.location_snippet || "";
+							host.authelia_authrequest = settingRow.meta.authrequest_snippet || "";
+						}
+					});
+			}
+
+			Promise.all([locationsPromise, autheliaPromise]).then(() => {
 				renderEngine
 					.parseAndRender(template, host)
 					.then((config_text) => {

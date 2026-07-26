@@ -51,6 +51,9 @@
 						"trust_forwarded_proto": {
     						"$ref": "../../../components/proxy-host-object.json#/properties/trust_forwarded_proto"
 						},
+						"authelia_enabled": {
+							"$ref": "../../../components/proxy-host-object.json#/properties/authelia_enabled"
+						},
 						"http2_support": {
 							"$ref": "../../../components/proxy-host-object.json#/properties/http2_support"
 						},
