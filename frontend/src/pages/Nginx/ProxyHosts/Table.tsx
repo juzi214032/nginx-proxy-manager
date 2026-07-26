@@ -55,6 +55,16 @@ export default function Table({
 					className: "w-1",
 				},
 			}),
+			columnHelper.accessor((row: any) => row.meta?.niceName, {
+				id: "niceName",
+				header: intl.formatMessage({ id: "column.name" }),
+				sortingFn: (a, b) => {
+					const aVal = a.original.meta?.niceName ?? "";
+					const bVal = b.original.meta?.niceName ?? "";
+					return aVal.localeCompare(bVal);
+				},
+				cell: (info: any) => info.getValue() || "-",
+			}),
 			columnHelper.accessor((row: any) => row, {
 				id: "domainNames",
 				header: intl.formatMessage({ id: "column.source" }),

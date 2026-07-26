@@ -44,6 +44,7 @@ export default function TableWrapper() {
 		filtered = data?.filter(
 			(item) =>
 				item.domainNames.some((domain: string) => domain.toLowerCase().includes(search)) ||
+				(item.meta?.niceName || "").toLowerCase().includes(search) ||
 				item.forwardHost.toLowerCase().includes(search) ||
 				`${item.forwardPort}`.includes(search),
 		);

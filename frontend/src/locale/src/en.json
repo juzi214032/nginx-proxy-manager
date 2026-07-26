@@ -455,6 +455,9 @@
 	"host.forward-scheme": {
 		"defaultMessage": "Scheme"
 	},
+	"host.nice-name": {
+		"defaultMessage": "Name"
+	},
 	"hosts": {
 		"defaultMessage": "Hosts"
 	},

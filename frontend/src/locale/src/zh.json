@@ -383,6 +383,9 @@
 	"host.forward-scheme": {
 		"defaultMessage": "协议"
 	},
+	"host.nice-name": {
+		"defaultMessage": "名称"
+	},
 	"hosts": {
 		"defaultMessage": "主机列表"
 	},

@@ -47,9 +47,11 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 		setIsSubmitting(true);
 		setErrorMsg(null);
 
-		const { ...payload } = {
+		const { niceName, ...rest } = values;
+		const payload = {
 			id: id === "new" ? undefined : id,
-			...values,
+			...rest,
+			meta: { ...rest.meta, niceName: niceName?.trim() || "" },
 		};
 
 		setProxyHost(payload, {
@@ -78,6 +80,7 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 					initialValues={
 						{
 							// Details tab
+							niceName: data?.meta?.niceName || "",
 							domainNames: data?.domainNames || [],
 							forwardScheme: data?.forwardScheme || "http",
 							forwardHost: data?.forwardHost || "",
@@ -169,6 +172,23 @@ const ProxyHostModal = EasyModal.create(({ id, visible, remove }: Props) => {
 									<div className="card-body">
 										<div className="tab-content">
 											<div className="tab-pane active show" id="tab-details" role="tabpanel">
+												<Field name="niceName">
+													{({ field }: any) => (
+														<div className="mb-3">
+															<label className="form-label" htmlFor="niceName">
+																<T id="host.nice-name" />
+															</label>
+															<input
+																id="niceName"
+																type="text"
+																maxLength={100}
+																autoComplete="off"
+																className="form-control"
+																{...field}
+															/>
+														</div>
+													)}
+												</Field>
 												<DomainNamesField isWildcardPermitted dnsProviderWildcardSupported />
 												<div className="row">
 													<div className="col-md-3">
