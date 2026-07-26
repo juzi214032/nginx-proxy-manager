@@ -108,12 +108,13 @@ export default function Table({
 					);
 				},
 			}),
-			columnHelper.accessor((row: any) => probeResults?.[row.id], {
+			columnHelper.display({
 				id: "service",
-				enableSorting: false,
 				header: intl.formatMessage({ id: "column.service" }),
 				cell: (info: any) => {
-					const value = info.getValue();
+					// read probeResults directly: accessor values are cached per-row
+					// and would go stale when probe data arrives after first render
+					const value = probeResults?.[info.row.original.id];
 					if (typeof value === "undefined") {
 						return <span className="text-secondary">-</span>;
 					}
