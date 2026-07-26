@@ -104,6 +104,9 @@
 	"action.close": {
 		"defaultMessage": "Close"
 	},
+	"action.copy-url": {
+		"defaultMessage": "Copy URL"
+	},
 	"action.delete": {
 		"defaultMessage": "Delete"
 	},
@@ -689,6 +692,15 @@
 	"settings.default-site.redirect": {
 		"defaultMessage": "Redirect"
 	},
+	"settings.public-port": {
+		"defaultMessage": "Public Port"
+	},
+	"settings.public-port.description": {
+		"defaultMessage": "Public facing port"
+	},
+	"settings.public-port.hint": {
+		"defaultMessage": "For display only, appended to domain names in the proxy hosts list. Set 0 or empty to disable."
+	},
 	"setup.preamble": {
 		"defaultMessage": "Get started by creating your admin account."
 	},
@@ -730,6 +742,9 @@
 	},
 	"update-available": {
 		"defaultMessage": "Update Available: {latestVersion}"
+	},
+	"url-copied": {
+		"defaultMessage": "URL copied to clipboard"
 	},
 	"user": {
 		"defaultMessage": "User"

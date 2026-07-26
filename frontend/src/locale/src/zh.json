@@ -41,6 +41,9 @@
 	"action.close": {
 		"defaultMessage": "关闭"
 	},
+	"action.copy-url": {
+		"defaultMessage": "复制链接"
+	},
 	"action.delete": {
 		"defaultMessage": "删除"
 	},
@@ -584,6 +587,15 @@
 	"settings.default-site.redirect": {
 		"defaultMessage": "重定向"
 	},
+	"settings.public-port": {
+		"defaultMessage": "对外端口"
+	},
+	"settings.public-port.description": {
+		"defaultMessage": "对外访问端口"
+	},
+	"settings.public-port.hint": {
+		"defaultMessage": "仅用于展示，会拼接在代理主机列表的域名后面。填 0 或留空表示不启用。"
+	},
 	"setup.preamble": {
 		"defaultMessage": "通过创建您的管理员账户开始使用。"
 	},
@@ -619,6 +631,9 @@
 	},
 	"test": {
 		"defaultMessage": "测试"
+	},
+	"url-copied": {
+		"defaultMessage": "链接已复制"
 	},
 	"user": {
 		"defaultMessage": "用户"

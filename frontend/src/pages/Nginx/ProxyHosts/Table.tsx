@@ -25,12 +25,22 @@ interface Props {
 	data: ProxyHost[];
 	isFiltered?: boolean;
 	isFetching?: boolean;
+	publicPort?: number;
 	onEdit?: (id: number) => void;
 	onDelete?: (id: number) => void;
 	onDisableToggle?: (id: number, enabled: boolean) => void;
 	onNew?: () => void;
 }
-export default function Table({ data, isFetching, onEdit, onDelete, onDisableToggle, onNew, isFiltered }: Props) {
+export default function Table({
+	data,
+	isFetching,
+	onEdit,
+	onDelete,
+	onDisableToggle,
+	onNew,
+	isFiltered,
+	publicPort,
+}: Props) {
 	const columnHelper = createColumnHelper<ProxyHost>();
 	const columns = useMemo(
 		() => [
@@ -55,7 +65,14 @@ export default function Table({ data, isFetching, onEdit, onDelete, onDisableTog
 				},
 				cell: (info: any) => {
 					const value = info.getValue();
-					return <DomainsFormatter domains={value.domainNames} createdOn={value.createdOn} />;
+					return (
+						<DomainsFormatter
+							domains={value.domainNames}
+							createdOn={value.createdOn}
+							port={publicPort}
+							copyable
+						/>
+					);
 				},
 			}),
 			columnHelper.accessor((row: any) => row, {
@@ -160,7 +177,7 @@ export default function Table({ data, isFetching, onEdit, onDelete, onDisableTog
 				},
 			}),
 		],
-		[columnHelper, onEdit, onDisableToggle, onDelete],
+		[columnHelper, onEdit, onDisableToggle, onDelete, publicPort],
 	);
 
 	const [sorting, setSorting] = useState<SortingState>([]);

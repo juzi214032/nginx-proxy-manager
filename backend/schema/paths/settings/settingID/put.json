@@ -14,7 +14,7 @@
 			"schema": {
 				"type": "string",
 				"minLength": 1,
-				"enum": ["default-site", "default-certificate"]
+				"enum": ["default-site", "default-certificate", "public-port"]
 			},
 			"required": true,
 			"description": "Setting ID",

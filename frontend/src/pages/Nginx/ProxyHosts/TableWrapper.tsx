@@ -4,10 +4,10 @@ import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
 import { deleteProxyHost, toggleProxyHost } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
-import { useProxyHosts } from "src/hooks";
+import { useProxyHosts, useSetting, useUser } from "src/hooks";
 import { T } from "src/locale";
 import { showDeleteConfirmModal, showHelpModal, showProxyHostModal } from "src/modals";
-import { MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
+import { isAdmin, MANAGE, PROXY_HOSTS } from "src/modules/Permissions";
 import { showObjectSuccess } from "src/notifications";
 import Table from "./Table";
 
@@ -15,6 +15,9 @@ export default function TableWrapper() {
 	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
 	const { isFetching, isLoading, isError, error, data } = useProxyHosts(["owner", "access_list", "certificate"]);
+	const { data: currentUser } = useUser("me");
+	const { data: publicPortSetting } = useSetting("public-port", { enabled: isAdmin(currentUser?.roles) });
+	const publicPort = Number(publicPortSetting?.value || 0);
 
 	if (isLoading) {
 		return <LoadingPage />;
@@ -98,6 +101,7 @@ export default function TableWrapper() {
 					data={filtered ?? data ?? []}
 					isFiltered={!!search}
 					isFetching={isFetching}
+					publicPort={publicPort}
 					onEdit={(id: number) => showProxyHostModal(id)}
 					onDelete={(id: number) => {
 						const host = data?.find((h) => h.id === id);

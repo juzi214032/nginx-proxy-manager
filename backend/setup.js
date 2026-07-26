@@ -115,6 +115,25 @@ const setupDefaultSettings = async () => {
 			});
 		logger.info("Default certificate setting added");
 	}
+
+	const portRow = await settingModel
+		.query()
+		.select("id")
+		.where({ id: "public-port" })
+		.first();
+
+	if (!portRow?.id) {
+		await settingModel
+			.query()
+			.insert({
+				id: "public-port",
+				name: "Public Port",
+				description: "Public facing port appended to domains for display only",
+				value: "0",
+				meta: {},
+			});
+		logger.info("Public port setting added");
+	}
 };
 
 /**
