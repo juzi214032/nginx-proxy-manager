@@ -120,6 +120,9 @@ export default function Table({
 					}
 					return <TrueFalseFormatter value={value} trueLabel="online" falseLabel="offline" animated={false} />;
 				},
+				meta: {
+					className: "text-nowrap",
+				},
 			}),
 			columnHelper.accessor((row: any) => row.certificate, {
 				id: "certificate",
@@ -161,6 +164,9 @@ export default function Table({
 				header: intl.formatMessage({ id: "column.status" }),
 				cell: (info: any) => {
 					return <TrueFalseFormatter value={info.getValue()} animated={false} />;
+				},
+				meta: {
+					className: "text-nowrap",
 				},
 			}),
 			columnHelper.display({
