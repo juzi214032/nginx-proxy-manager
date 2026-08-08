@@ -341,6 +341,12 @@
 	"column.service": {
 		"defaultMessage": "Service"
 	},
+	"column.service-icon": {
+		"defaultMessage": "Service Icon"
+	},
+	"column.service-keywords": {
+		"defaultMessage": "Service Keywords"
+	},
 	"column.source": {
 		"defaultMessage": "Source"
 	},

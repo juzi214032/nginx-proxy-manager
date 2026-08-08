@@ -62,6 +62,9 @@
 						"authelia_enabled": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/authelia_enabled"
 						},
+						"service_keywords": {
+							"$ref": "../../../../components/proxy-host-object.json#/properties/service_keywords"
+						},
 						"http2_support": {
 							"$ref": "../../../../components/proxy-host-object.json#/properties/http2_support"
 						},

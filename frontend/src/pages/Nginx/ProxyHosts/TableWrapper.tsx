@@ -2,7 +2,7 @@ import { IconHelp, IconSearch } from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import Alert from "react-bootstrap/Alert";
-import { deleteProxyHost, setProxyHostAuthelia, toggleProxyHost } from "src/api/backend";
+import { deleteProxyHost, setProxyHostAuthelia, setProxyHostKeywords, toggleProxyHost } from "src/api/backend";
 import { Button, HasPermission, LoadingPage } from "src/components";
 import { useProxyHosts, useProxyHostsProbe, useSetting, useUser } from "src/hooks";
 import { T } from "src/locale";
@@ -14,7 +14,7 @@ import Table from "./Table";
 export default function TableWrapper() {
 	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
-	const { isFetching, isLoading, isError, error, data } = useProxyHosts(["owner", "access_list", "certificate"]);
+	const { isFetching, isLoading, isError, error, data } = useProxyHosts(["access_list", "certificate"]);
 	const { data: currentUser } = useUser("me");
 	const { data: publicPortSetting } = useSetting("public-port", { enabled: isAdmin(currentUser?.roles) });
 	const publicPort = Number(publicPortSetting?.value || 0);
@@ -55,6 +55,25 @@ export default function TableWrapper() {
 			queryClient.invalidateQueries({ queryKey: ["proxy-host", id] });
 		} catch {
 			setAutheliaLocal(id, !autheliaEnabled);
+		}
+	};
+
+	const setKeywordsLocal = (id: number, serviceKeywords: string) => {
+		queryClient.setQueriesData({ queryKey: ["proxy-hosts"] }, (old: any) =>
+			Array.isArray(old) ? old.map((h: any) => (h.id === id ? { ...h, serviceKeywords } : h)) : old,
+		);
+	};
+
+	const handleKeywordsChange = async (id: number, serviceKeywords: string) => {
+		const previous = (data || []).find((h) => h.id === id)?.serviceKeywords || "";
+		// optimistic update so the cell responds instantly
+		setKeywordsLocal(id, serviceKeywords);
+		try {
+			await setProxyHostKeywords(id, serviceKeywords);
+			showObjectSuccess("proxy-host", "saved");
+			queryClient.invalidateQueries({ queryKey: ["proxy-host", id] });
+		} catch {
+			setKeywordsLocal(id, previous);
 		}
 	};
 
@@ -147,6 +166,7 @@ export default function TableWrapper() {
 					}}
 					onDisableToggle={handleDisableToggle}
 					onAutheliaToggle={handleAutheliaToggle}
+					onKeywordsChange={handleKeywordsChange}
 					onNew={() => showProxyHostModal("new")}
 				/>
 			</div>

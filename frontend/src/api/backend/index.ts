@@ -46,6 +46,7 @@ export * from "./renewCertificate";
 export * from "./responseTypes";
 export * from "./setPermissions";
 export * from "./setProxyHostAuthelia";
+export * from "./setProxyHostKeywords";
 export * from "./testHttpCertificate";
 export * from "./toggleDeadHost";
 export * from "./toggleProxyHost";

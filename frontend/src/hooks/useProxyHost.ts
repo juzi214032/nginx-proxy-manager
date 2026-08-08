@@ -26,6 +26,7 @@ const fetchProxyHost = (id: number | "new") => {
 			hstsSubdomains: false,
 			trustForwardedProto: false,
 			autheliaEnabled: false,
+			serviceKeywords: "",
 		} as ProxyHost);
 	}
 	return getProxyHost(id, ["owner"]);

@@ -269,6 +269,12 @@
 	"column.service": {
 		"defaultMessage": "服务"
 	},
+	"column.service-icon": {
+		"defaultMessage": "服务图标"
+	},
+	"column.service-keywords": {
+		"defaultMessage": "服务关键字"
+	},
 	"column.source": {
 		"defaultMessage": "来源"
 	},

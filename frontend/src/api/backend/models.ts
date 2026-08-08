@@ -129,6 +129,7 @@ export interface ProxyHost {
 	hstsSubdomains: boolean;
 	trustForwardedProto: boolean;
 	autheliaEnabled: boolean;
+	serviceKeywords: string;
 	// Expansions:
 	owner?: User;
 	accessList?: AccessList;

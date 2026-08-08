@@ -7,5 +7,7 @@ export * from "./EmailFormatter";
 export * from "./EventFormatter";
 export * from "./GravatarFormatter";
 export * from "./RolesFormatter";
+export * from "./ServiceIconFormatter";
+export * from "./ServiceKeywordsFormatter";
 export * from "./TrueFalseFormatter";
 export * from "./ValueWithDateFormatter";

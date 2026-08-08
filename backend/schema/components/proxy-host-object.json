@@ -24,7 +24,8 @@
 		"hsts_enabled",
 		"hsts_subdomains",
 		"trust_forwarded_proto",
-		"authelia_enabled"
+		"authelia_enabled",
+		"service_keywords"
 	],
 	"properties": {
 		"id": {
@@ -152,6 +153,12 @@
 			"type": "boolean",
 			"description": "Protect this host with Authelia authentication",
 			"example": false
+		},
+		"service_keywords": {
+			"type": "string",
+			"maxLength": 500,
+			"description": "Comma-separated keywords used to match a service icon",
+			"example": "traccar,gps"
 		},
 		"certificate": {
 			"oneOf": [

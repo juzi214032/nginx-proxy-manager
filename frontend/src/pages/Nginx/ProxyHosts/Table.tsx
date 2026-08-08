@@ -13,8 +13,9 @@ import {
 	CertificateFormatter,
 	DomainsFormatter,
 	EmptyData,
-	GravatarFormatter,
 	HasPermission,
+	ServiceIconFormatter,
+	ServiceKeywordsFormatter,
 	TrueFalseFormatter,
 } from "src/components";
 import { TableLayout } from "src/components/Table/TableLayout";
@@ -31,6 +32,7 @@ interface Props {
 	onDelete?: (id: number) => void;
 	onDisableToggle?: (id: number, enabled: boolean) => void;
 	onAutheliaToggle?: (id: number, autheliaEnabled: boolean) => void;
+	onKeywordsChange?: (id: number, serviceKeywords: string) => void;
 	onNew?: () => void;
 }
 export default function Table({
@@ -40,6 +42,7 @@ export default function Table({
 	onDelete,
 	onDisableToggle,
 	onAutheliaToggle,
+	onKeywordsChange,
 	onNew,
 	isFiltered,
 	publicPort,
@@ -48,15 +51,26 @@ export default function Table({
 	const columnHelper = createColumnHelper<ProxyHost>();
 	const columns = useMemo(
 		() => [
-			columnHelper.accessor((row: any) => row.owner, {
-				id: "owner",
-				enableSorting: false,
+			columnHelper.display({
+				id: "serviceIcon",
+				header: intl.formatMessage({ id: "column.service-icon" }),
 				cell: (info: any) => {
-					const value = info.getValue();
-					return <GravatarFormatter url={value ? value.avatar : ""} name={value ? value.name : ""} />;
+					return <ServiceIconFormatter host={info.row.original} />;
 				},
 				meta: {
 					className: "w-1",
+				},
+			}),
+			columnHelper.accessor((row: any) => row.serviceKeywords, {
+				id: "serviceKeywords",
+				header: intl.formatMessage({ id: "column.service-keywords" }),
+				cell: (info: any) => {
+					return (
+						<ServiceKeywordsFormatter
+							value={info.getValue() || ""}
+							onCommit={(next: string) => onKeywordsChange?.(info.row.original.id, next)}
+						/>
+					);
 				},
 			}),
 			columnHelper.accessor((row: any) => row.meta?.niceName, {
@@ -235,7 +249,7 @@ export default function Table({
 				},
 			}),
 		],
-		[columnHelper, onEdit, onDisableToggle, onAutheliaToggle, onDelete, publicPort, probeResults],
+		[columnHelper, onEdit, onDisableToggle, onAutheliaToggle, onKeywordsChange, onDelete, publicPort, probeResults],
 	);
 
 	const [sorting, setSorting] = useState<SortingState>([]);
