@@ -136,7 +136,13 @@ function ServiceIconFormatterComponent({ host }: Props) {
 				alt=""
 				title={prefix}
 				className="avatar avatar-2"
-				style={{ objectFit: "contain", border: "none", display: isLoaded ? undefined : "none" }}
+				style={{
+					objectFit: "contain",
+					border: "none",
+					backgroundColor: "transparent",
+					boxShadow: "none",
+					display: isLoaded ? undefined : "none",
+				}}
 				onError={handleError}
 				onLoad={handleLoad}
 			/>
